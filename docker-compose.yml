@@ -2,11 +2,11 @@ version: "3"
 services:
   nutmeg-slackbot:
     container_name: nsb
-    build: .
+    build: ./slackbot
     env_file:
       - .env.development
     volumes:
-      - .:/work
+      - ./slackbot:/work
     ports:
       - 3000:3000
     tty: true

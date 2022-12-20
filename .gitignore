@@ -1,3 +1,3 @@
 .env*
-mongo
-clients/__pycache__/
+mongo/
+slackbot/clients/__pycache__/
