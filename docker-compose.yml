@@ -45,3 +45,5 @@ services:
     ports:
       - '1323:1323'
     command: './start.sh'
+    depends_on:
+      - mongo
