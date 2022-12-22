@@ -3,12 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -54,7 +52,6 @@ func ConnectMongo() *mongo.Client {
 	// for _, item := range result {
 	// 	fmt.Println(item)
 	// }
-
-	fmt.Println(col)
+	//fmt.Println(col)
 	return client
 }
