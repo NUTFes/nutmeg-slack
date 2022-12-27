@@ -16,6 +16,12 @@ func main() {
 
 	e.GET("/documents", controller.IndexDocument)
 
+	// CORS
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		// TODO: 本番環境のURLも許可する
+		AllowOrigins: []string{"http://localhost:8080"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
