@@ -19,7 +19,7 @@ class MongoDB:
       collection_name (str): コレクション名
     """
     self.client = MongoClient(f"mongodb://{user}:{password}@{host}:{port}")
-    self.db = self.client[os.environ.get("DB")]
+    self.db = self.client[db_name]
     self.collection = self.db[collection_name]
 
   def insert(self, log):

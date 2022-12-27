@@ -11,6 +11,9 @@ services:
       - 3000:3000
     tty: true
     command: 'python main.py'
+    depends_on:
+      - mongo
+      - mongo-express
 
   mongo:
     image: mongo

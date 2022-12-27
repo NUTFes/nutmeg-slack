@@ -15,7 +15,7 @@ def monitoring_nutfes_slack(body: dict):
   Args:
     body (dict): Slackのメッセージ
   """
-  mongo = MongoDB("mongo", 27017, "root", "password", "nutfes_slack_log", "log")
+  mongo = MongoDB("mongo", 27017, "root", "password",os.environ.get("DB") , "log")
   mongo.insert(body)
 
 if __name__ == "__main__":
