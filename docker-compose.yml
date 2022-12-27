@@ -53,7 +53,7 @@ services:
       context: ./frontend
     volumes:
       - ./frontend:/app
-    #command: 'npm run serve'
+    command: 'npm run serve'
     expose:
       - '8080'
     ports:
