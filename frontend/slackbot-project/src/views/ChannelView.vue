@@ -1,7 +1,7 @@
 <template>
   <div class="channel">
     <h1>Channel</h1>
-    {{ slackLog  }}
+    {{ slackLog }}
   </div>
 </template>
 
