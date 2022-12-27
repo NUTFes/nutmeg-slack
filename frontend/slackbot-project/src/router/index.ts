@@ -20,7 +20,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/channels",
     name: "channels",
     component: () => import("../views/ChannelView.vue"),
-  }
+  },
 ];
 
 const router = createRouter({
