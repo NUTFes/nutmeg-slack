@@ -1,9 +1,8 @@
 package usecase
 
 import (
-	"fmt"
-
 	"github.com/NUTFes/nutmeg-slack/repository"
+	"github.com/NUTFes/nutmeg-slack/usecase/util"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -13,7 +12,7 @@ type mongoDBUsecase struct {
 
 type MongoDBUsecase interface {
 	GetAllCollection() []bson.M
-	GetChannel() []map[string]string
+	GetChannel() []string
 }
 
 func NewMongoDBUsecase(repository repository.MongoDBRepository) *mongoDBUsecase {
@@ -28,17 +27,18 @@ func (usecase *mongoDBUsecase) GetAllCollection() (docs []bson.M) {
 	return docs
 }
 
-func (usecase *mongoDBUsecase) GetChannel() (channel []map[string]string) {
+func (usecase *mongoDBUsecase) GetChannel() []string {
 	docs, err := usecase.repository.AllCollection()
+	var channelSlice []string
 	for _, v := range docs {
-		a := v["event"].(bson.M)["channel"]
-		b := make(map[string]string)
-		b["channel"] = a.(string)
-		channel = append(channel, b)
+		// channelにvを格納する
+		channel := v["event"].(bson.M)["channel"].(string)
+		if util.Iscontains(channelSlice, channel) == false {
+			channelSlice = append(channelSlice, channel)
+		}
 	}
-	fmt.Println(channel)
 	if err != nil {
 		panic(err)
 	}
-	return channel
+	return channelSlice
 }
