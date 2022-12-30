@@ -14,14 +14,14 @@ type mongoDBRepository struct {
 }
 
 type MongoDBRepository interface {
-	GetDocuments() ([]bson.M, error)
+	AllCollection() ([]bson.M, error)
 }
 
 func NewMongoDBRepository(client *mongo.Client) *mongoDBRepository {
 	return &mongoDBRepository{client: client}
 }
 
-func (mongoDBRepository) GetDocuments() ([]bson.M, error) {
+func (mongoDBRepository) AllCollection() ([]bson.M, error) {
 	client := db.ConnectMongo()
 	col, err := client.Database("nutfes_slack_log_dev").Collection("log").Find(context.Background(), bson.M{})
 	if err != nil {
