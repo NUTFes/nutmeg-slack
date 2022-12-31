@@ -14,6 +14,7 @@ type mongoDBController struct {
 type MongoDBController interface {
 	IndexDocument(ctx echo.Context) error
 	IndexChannel(ctx echo.Context) error
+	IndexData(ctx echo.Context) error
 }
 
 func NewMongoDBController(u usecase.MongoDBUsecase) *mongoDBController {
@@ -28,4 +29,9 @@ func (c *mongoDBController) IndexDocument(ctx echo.Context) error {
 func (c *mongoDBController) IndexChannel(ctx echo.Context) error {
 	channel := c.usecase.GetChannel()
 	return ctx.JSON(http.StatusOK, channel)
+}
+
+func (c *mongoDBController) IndexData(ctx echo.Context) error {
+	user := c.usecase.FetchData()
+	return ctx.JSON(http.StatusOK, user)
 }

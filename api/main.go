@@ -18,6 +18,7 @@ func main() {
 
 	e.GET("/documents", controller.IndexDocument)
 	e.GET("/channel", controller.IndexChannel)
+	e.GET("/data", controller.IndexData)
 
 	// CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
