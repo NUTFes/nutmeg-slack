@@ -1,0 +1,80 @@
+package usecase
+
+import (
+	"github.com/NUTFes/nutmeg-slack/repository"
+	"github.com/NUTFes/nutmeg-slack/usecase/util"
+	"go.mongodb.org/mongo-driver/bson"
+)
+
+type mongoDBUsecase struct {
+	repository repository.MongoDBRepository
+}
+
+type MongoDBUsecase interface {
+	GetAllCollection() []bson.M
+	GetChannel() []string
+	FetchData() []map[string]string
+}
+
+func NewMongoDBUsecase(r repository.MongoDBRepository) *mongoDBUsecase {
+	return &mongoDBUsecase{repository: r}
+}
+
+func (u *mongoDBUsecase) GetAllCollection() (docs []bson.M) {
+	docs, err := u.repository.AllCollection()
+	if err != nil {
+		panic(err)
+	}
+	return docs
+}
+
+// DBに保存されているchannelを取得する
+func (u *mongoDBUsecase) GetChannel() []string {
+	docs, err := u.repository.AllCollection()
+	var channelSlice []string
+	for _, v := range docs {
+		channel := v["event"].(bson.M)["channel"].(string)
+		if util.Iscontains(channelSlice, channel) == false {
+			channelSlice = append(channelSlice, channel)
+		}
+	}
+	if err != nil {
+		panic(err)
+	}
+	return channelSlice
+}
+
+// user, text, channel, event_ts, thread_tsを取得する
+func (u *mongoDBUsecase) FetchData() []map[string]string {
+	docs, err := u.repository.AllCollection()
+	var data []map[string]string
+	for _, v := range docs {
+		var m = make(map[string]string)
+		eventTs := v["event"].(bson.M)["event_ts"].(string)
+		channel := v["event"].(bson.M)["channel"].(string)
+		text := v["event"].(bson.M)["text"]
+		threadTs := v["event"].(bson.M)["thread_ts"]
+		user := v["event"].(bson.M)["user"]
+
+		m["event_ts"] = eventTs
+
+		m["channel"] = channel
+		if threadTs != nil {
+			m["thread_ts"] = threadTs.(string)
+		}
+
+		if text != nil {
+			m["text"] = text.(string)
+		}
+
+		if user != nil {
+			m["user"] = user.(string)
+		}
+
+		data = append(data, m)
+	}
+	if err != nil {
+		panic(err)
+	}
+	return data
+}

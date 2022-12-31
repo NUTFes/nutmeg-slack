@@ -3,26 +3,35 @@ package controller
 import (
 	"net/http"
 
-	"github.com/NUTFes/nutmeg-slack/repository"
+	"github.com/NUTFes/nutmeg-slack/usecase"
 	"github.com/labstack/echo/v4"
 )
 
 type mongoDBController struct {
-	repository repository.MongoDBRepository
+	usecase usecase.MongoDBUsecase
 }
 
-type MongoDBController interface{
-	IndexDocument(c echo.Context) error
+type MongoDBController interface {
+	IndexDocument(ctx echo.Context) error
+	IndexChannel(ctx echo.Context) error
+	IndexData(ctx echo.Context) error
 }
 
-func NewMongoDBController(repository repository.MongoDBRepository) *mongoDBController {
-	return &mongoDBController{repository: repository}
+func NewMongoDBController(u usecase.MongoDBUsecase) *mongoDBController {
+	return &mongoDBController{usecase: u}
 }
 
-func (controller *mongoDBController) IndexDocument(c echo.Context) error {
-	doc, err := controller.repository.GetDocuments()
-	if err != nil {
-		panic(err)
-	}
-	return c.JSON(http.StatusOK, doc)
+func (c *mongoDBController) IndexDocument(ctx echo.Context) error {
+	doc := c.usecase.GetAllCollection()
+	return ctx.JSON(http.StatusOK, doc)
+}
+
+func (c *mongoDBController) IndexChannel(ctx echo.Context) error {
+	channel := c.usecase.GetChannel()
+	return ctx.JSON(http.StatusOK, channel)
+}
+
+func (c *mongoDBController) IndexData(ctx echo.Context) error {
+	user := c.usecase.FetchData()
+	return ctx.JSON(http.StatusOK, user)
 }
