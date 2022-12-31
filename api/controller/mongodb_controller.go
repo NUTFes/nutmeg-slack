@@ -12,20 +12,20 @@ type mongoDBController struct {
 }
 
 type MongoDBController interface {
-	IndexDocument(c echo.Context) error
-	IndexChannel(c echo.Context) error
+	IndexDocument(ctx echo.Context) error
+	IndexChannel(ctx echo.Context) error
 }
 
-func NewMongoDBController(usecase usecase.MongoDBUsecase) *mongoDBController {
-	return &mongoDBController{usecase: usecase}
+func NewMongoDBController(u usecase.MongoDBUsecase) *mongoDBController {
+	return &mongoDBController{usecase: u}
 }
 
-func (controller *mongoDBController) IndexDocument(c echo.Context) error {
-	doc := controller.usecase.GetAllCollection()
-	return c.JSON(http.StatusOK, doc)
+func (c *mongoDBController) IndexDocument(ctx echo.Context) error {
+	doc := c.usecase.GetAllCollection()
+	return ctx.JSON(http.StatusOK, doc)
 }
 
-func (controller *mongoDBController) IndexChannel(c echo.Context) error {
-	channel := controller.usecase.GetChannel()
-	return c.JSON(http.StatusOK, channel)
+func (c *mongoDBController) IndexChannel(ctx echo.Context) error {
+	channel := c.usecase.GetChannel()
+	return ctx.JSON(http.StatusOK, channel)
 }

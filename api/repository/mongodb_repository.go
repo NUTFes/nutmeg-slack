@@ -17,8 +17,8 @@ type MongoDBRepository interface {
 	AllCollection() ([]bson.M, error)
 }
 
-func NewMongoDBRepository(client *mongo.Client) *mongoDBRepository {
-	return &mongoDBRepository{client: client}
+func NewMongoDBRepository(c *mongo.Client) *mongoDBRepository {
+	return &mongoDBRepository{client: c}
 }
 
 func (mongoDBRepository) AllCollection() ([]bson.M, error) {

@@ -15,20 +15,20 @@ type MongoDBUsecase interface {
 	GetChannel() []string
 }
 
-func NewMongoDBUsecase(repository repository.MongoDBRepository) *mongoDBUsecase {
-	return &mongoDBUsecase{repository: repository}
+func NewMongoDBUsecase(r repository.MongoDBRepository) *mongoDBUsecase {
+	return &mongoDBUsecase{repository: r}
 }
 
-func (usecase *mongoDBUsecase) GetAllCollection() (docs []bson.M) {
-	docs, err := usecase.repository.AllCollection()
+func (u *mongoDBUsecase) GetAllCollection() (docs []bson.M) {
+	docs, err := u.repository.AllCollection()
 	if err != nil {
 		panic(err)
 	}
 	return docs
 }
 
-func (usecase *mongoDBUsecase) GetChannel() []string {
-	docs, err := usecase.repository.AllCollection()
+func (u *mongoDBUsecase) GetChannel() []string {
+	docs, err := u.repository.AllCollection()
 	var channelSlice []string
 	for _, v := range docs {
 		// channelにvを格納する
