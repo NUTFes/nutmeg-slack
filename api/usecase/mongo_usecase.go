@@ -14,6 +14,7 @@ type MongoDBUsecase interface {
 	GetAllCollection() []bson.M
 	GetChannel() []string
 	FetchData() []map[string]string
+	GroupDataByChannel() [][]map[string]string
 }
 
 func NewMongoDBUsecase(r repository.MongoDBRepository) *mongoDBUsecase {
@@ -77,4 +78,22 @@ func (u *mongoDBUsecase) FetchData() []map[string]string {
 		panic(err)
 	}
 	return data
+}
+
+// チャンネルごとにデータをまとめる
+func (u *mongoDBUsecase) GroupDataByChannel() [][]map[string]string {
+	channel := u.GetChannel()
+	data := u.FetchData()
+	var groupData [][]map[string]string
+	// チャンネルごとに1配列に格納する
+	for _, c := range channel {
+		var m []map[string]string
+		for _, d := range data {
+			if d["channel"] == c {
+				m = append(m, d)
+			}
+		}
+		groupData = append(groupData, m)
+	}
+	return groupData
 }

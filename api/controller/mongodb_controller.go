@@ -35,3 +35,8 @@ func (c *mongoDBController) IndexData(ctx echo.Context) error {
 	user := c.usecase.FetchData()
 	return ctx.JSON(http.StatusOK, user)
 }
+
+func (c *mongoDBController) IndexGroupByChannel(ctx echo.Context) error {
+	user := c.usecase.GroupDataByChannel()
+	return ctx.JSON(http.StatusOK, user)
+}
