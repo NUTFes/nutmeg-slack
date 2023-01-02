@@ -1,7 +1,18 @@
 <template>
   <div class="channel">
-    <h1>Channel</h1>
-    {{ slackLog }}
+    <h1>NUMEG SLACK LOG</h1>
+    <v-col v-for="(slackLog, j) in slackLogs" v-bind:key="slackLog.channel">
+      <v-card elevation="8">
+        <v-card-title>
+          <h3>{{ channel[j] }}</h3>
+        </v-card-title>
+        <li v-for="i in slackLog" :key="i" style="list-style: none">
+          <v-card-text>
+            <p>{{ i.user }}:{{ i.text }}</p>
+          </v-card-text>
+        </li>
+      </v-card>
+    </v-col>
   </div>
 </template>
 
@@ -19,13 +30,24 @@ export default {
   name: "ChannelView",
   data() {
     return {
-      slackLog: [],
+      slackLogs: [
+        {
+          channel: "",
+          text: "",
+          thredTs: "",
+          user: "",
+          eventTs: "",
+        },
+      ],
+      channel: [],
     };
   },
   mounted() {
-    client.get("/documents").then((response) => {
-      this.slackLog = response.data;
-      console.log(this.slackLog);
+    client.get("/group/channel").then((response) => {
+      this.slackLogs = response.data;
+      for (let i = 0; i < this.slackLogs.length; i++) {
+        this.channel.push(this.slackLogs[i][0]["channel"]);
+      }
     });
   },
 };
