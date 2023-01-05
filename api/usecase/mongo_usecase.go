@@ -34,11 +34,14 @@ func (u *mongoDBUsecase) GetAllCollection() (docs []bson.M) {
 // DBに保存されているchannelを取得する
 func (u *mongoDBUsecase) GetChannel() []string {
 	docs, err := u.repository.AllCollection()
+	channelsInfoMap, err := u.repository.GetChannelInfo()
+	channelsInfo := channelsInfoMap[0]
 	var channelSlice []string
 	for _, v := range docs {
 		channel := v["event"].(bson.M)["channel"].(string)
-		if util.Iscontains(channelSlice, channel) == false {
-			channelSlice = append(channelSlice, channel)
+		channelName := channelsInfo[channel].(string)
+		if util.Iscontains(channelSlice, channelName) == false {
+			channelSlice = append(channelSlice, channelName)
 		}
 	}
 	if err != nil {
@@ -109,6 +112,7 @@ func (u *mongoDBUsecase) GroupDataByChannel() [][]map[string]string {
 	return groupData
 }
 
+// channelの情報を取得する{channel_id: channel_name}
 func (u *mongoDBUsecase) GetChannelInfo() (docs []bson.M) {
 	docs, err := u.repository.GetChannelInfo()
 	if err != nil {
@@ -117,6 +121,7 @@ func (u *mongoDBUsecase) GetChannelInfo() (docs []bson.M) {
 	return docs
 }
 
+// userの情報を取得する{user_id: user_name}
 func (u *mongoDBUsecase) GetUserInfo() (docs []bson.M) {
 	docs, err := u.repository.GetUserInfo()
 	if err != nil {
