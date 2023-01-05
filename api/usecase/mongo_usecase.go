@@ -50,7 +50,13 @@ func (u *mongoDBUsecase) GetChannel() []string {
 // user, text, channel, event_ts, thread_tsを取得する
 func (u *mongoDBUsecase) FetchData() []map[string]string {
 	docs, err := u.repository.AllCollection()
+	usersInfoMap, err := u.repository.GetUserInfo()
+	channelsInfoMap, err := u.repository.GetChannelInfo()
+
+	usersInfo := usersInfoMap[0]
+	channelsInfo := channelsInfoMap[0]
 	var data []map[string]string
+
 	for _, v := range docs {
 		var m = make(map[string]string)
 		eventTs := v["event"].(bson.M)["event_ts"].(string)
@@ -61,7 +67,9 @@ func (u *mongoDBUsecase) FetchData() []map[string]string {
 
 		m["event_ts"] = eventTs
 
-		m["channel"] = channel
+		channelName := channelsInfo[channel]
+		m["channel"] = channelName.(string)
+
 		if threadTs != nil {
 			m["thread_ts"] = threadTs.(string)
 		}
@@ -71,7 +79,8 @@ func (u *mongoDBUsecase) FetchData() []map[string]string {
 		}
 
 		if user != nil {
-			m["user"] = user.(string)
+			userName := usersInfo[user.(string)]
+			m["user"] = userName.(string)
 		}
 
 		data = append(data, m)
