@@ -15,6 +15,8 @@ type MongoDBUsecase interface {
 	GetChannel() []string
 	FetchData() []map[string]string
 	GroupDataByChannel() [][]map[string]string
+	GetChannelInfo() []bson.M
+	GetUserInfo() []bson.M
 }
 
 func NewMongoDBUsecase(r repository.MongoDBRepository) *mongoDBUsecase {
@@ -32,11 +34,14 @@ func (u *mongoDBUsecase) GetAllCollection() (docs []bson.M) {
 // DBに保存されているchannelを取得する
 func (u *mongoDBUsecase) GetChannel() []string {
 	docs, err := u.repository.AllCollection()
+	channelsInfoMap, err := u.repository.GetChannelInfo()
+	channelsInfo := channelsInfoMap[0]
 	var channelSlice []string
 	for _, v := range docs {
 		channel := v["event"].(bson.M)["channel"].(string)
-		if util.Iscontains(channelSlice, channel) == false {
-			channelSlice = append(channelSlice, channel)
+		channelName := channelsInfo[channel].(string)
+		if util.Iscontains(channelSlice, channelName) == false {
+			channelSlice = append(channelSlice, channelName)
 		}
 	}
 	if err != nil {
@@ -48,7 +53,13 @@ func (u *mongoDBUsecase) GetChannel() []string {
 // user, text, channel, event_ts, thread_tsを取得する
 func (u *mongoDBUsecase) FetchData() []map[string]string {
 	docs, err := u.repository.AllCollection()
+	usersInfoMap, err := u.repository.GetUserInfo()
+	channelsInfoMap, err := u.repository.GetChannelInfo()
+
+	usersInfo := usersInfoMap[0]
+	channelsInfo := channelsInfoMap[0]
 	var data []map[string]string
+
 	for _, v := range docs {
 		var m = make(map[string]string)
 		eventTs := v["event"].(bson.M)["event_ts"].(string)
@@ -59,7 +70,9 @@ func (u *mongoDBUsecase) FetchData() []map[string]string {
 
 		m["event_ts"] = eventTs
 
-		m["channel"] = channel
+		channelName := channelsInfo[channel]
+		m["channel"] = channelName.(string)
+
 		if threadTs != nil {
 			m["thread_ts"] = threadTs.(string)
 		}
@@ -69,7 +82,8 @@ func (u *mongoDBUsecase) FetchData() []map[string]string {
 		}
 
 		if user != nil {
-			m["user"] = user.(string)
+			userName := usersInfo[user.(string)]
+			m["user"] = userName.(string)
 		}
 
 		data = append(data, m)
@@ -96,4 +110,22 @@ func (u *mongoDBUsecase) GroupDataByChannel() [][]map[string]string {
 		groupData = append(groupData, m)
 	}
 	return groupData
+}
+
+// channelの情報を取得する{channel_id: channel_name}
+func (u *mongoDBUsecase) GetChannelInfo() (docs []bson.M) {
+	docs, err := u.repository.GetChannelInfo()
+	if err != nil {
+		panic(err)
+	}
+	return docs
+}
+
+// userの情報を取得する{user_id: user_name}
+func (u *mongoDBUsecase) GetUserInfo() (docs []bson.M) {
+	docs, err := u.repository.GetUserInfo()
+	if err != nil {
+		panic(err)
+	}
+	return docs
 }

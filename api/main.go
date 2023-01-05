@@ -20,6 +20,8 @@ func main() {
 	e.GET("/channel", controller.IndexChannel)
 	e.GET("/data", controller.IndexData)
 	e.GET("/group/channel", controller.IndexGroupByChannel)
+	e.GET("/channel/info", controller.IndexChannelInfo)
+	e.GET("/users/info", controller.IndexUserInfo)
 
 	// CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
