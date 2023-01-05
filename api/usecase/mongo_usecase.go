@@ -15,6 +15,8 @@ type MongoDBUsecase interface {
 	GetChannel() []string
 	FetchData() []map[string]string
 	GroupDataByChannel() [][]map[string]string
+	GetChannelInfo() []bson.M
+	GetUserInfo() []bson.M
 }
 
 func NewMongoDBUsecase(r repository.MongoDBRepository) *mongoDBUsecase {
@@ -96,4 +98,20 @@ func (u *mongoDBUsecase) GroupDataByChannel() [][]map[string]string {
 		groupData = append(groupData, m)
 	}
 	return groupData
+}
+
+func (u *mongoDBUsecase) GetChannelInfo() (docs []bson.M) {
+	docs, err := u.repository.GetChannelInfo()
+	if err != nil {
+		panic(err)
+	}
+	return docs
+}
+
+func (u *mongoDBUsecase) GetUserInfo() (docs []bson.M) {
+	docs, err := u.repository.GetUserInfo()
+	if err != nil {
+		panic(err)
+	}
+	return docs
 }

@@ -40,3 +40,13 @@ func (c *mongoDBController) IndexGroupByChannel(ctx echo.Context) error {
 	user := c.usecase.GroupDataByChannel()
 	return ctx.JSON(http.StatusOK, user)
 }
+
+func (c *mongoDBController) IndexChannelInfo(ctx echo.Context) error {
+	channelInfo := c.usecase.GetChannelInfo()
+	return ctx.JSON(http.StatusOK, channelInfo)
+}
+
+func (c *mongoDBController) IndexUserInfo(ctx echo.Context) error {
+	channelUser := c.usecase.GetUserInfo()
+	return ctx.JSON(http.StatusOK, channelUser)
+}
