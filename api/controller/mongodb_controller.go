@@ -15,6 +15,9 @@ type MongoDBController interface {
 	IndexDocument(ctx echo.Context) error
 	IndexChannel(ctx echo.Context) error
 	IndexData(ctx echo.Context) error
+	IndexGroupByChannel(ctx echo.Context) error
+	IndexChannelInfo(ctx echo.Context) error
+	IndexUserInfo(ctx echo.Context) error
 }
 
 func NewMongoDBController(u usecase.MongoDBUsecase) *mongoDBController {
