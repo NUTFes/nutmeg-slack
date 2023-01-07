@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import ChannelView from "../views/ChannelView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -17,9 +18,9 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
   {
-    path: "/channels",
+    path: "/channels/:channelId",
     name: "channels",
-    component: () => import("../views/ChannelView.vue"),
+    component: ChannelView,
   },
 ];
 
