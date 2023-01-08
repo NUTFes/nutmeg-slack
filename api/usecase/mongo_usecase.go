@@ -68,13 +68,14 @@ func (u *mongoDBUsecase) FetchData() []map[string]string {
 		threadTs := v["event"].(bson.M)["thread_ts"]
 		user := v["event"].(bson.M)["user"]
 
-		m["event_ts"] = eventTs
+		m["eventTs"] = eventTs
 
 		channelName := channelsInfo[channel]
-		m["channel"] = channelName.(string)
+		m["channelName"] = channelName.(string)
+		m["channelId"] = channel
 
 		if threadTs != nil {
-			m["thread_ts"] = threadTs.(string)
+			m["threadTs"] = threadTs.(string)
 		}
 
 		if text != nil {
@@ -103,7 +104,7 @@ func (u *mongoDBUsecase) GroupDataByChannel() [][]map[string]string {
 	for _, c := range channel {
 		var m []map[string]string
 		for _, d := range data {
-			if d["channel"] == c {
+			if d["channelName"] == c {
 				m = append(m, d)
 			}
 		}
