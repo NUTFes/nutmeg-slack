@@ -1,7 +1,7 @@
 interface Message {
   channelId: string;
   channelName: string;
-  text: string;
+  text?: string;
   user: string;
   eventTs: string;
   threadTs?: string;
