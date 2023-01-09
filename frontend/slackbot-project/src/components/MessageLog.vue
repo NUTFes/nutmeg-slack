@@ -13,17 +13,22 @@ const client: AxiosInstance = axios.create({
 const route = useRoute();
 const routeParamChannelId = route.params.channelId;
 const channelLog = ref<Message[]>([]);
-const channelName = ref<string>("");
+const messageTime = ref<string[]>([]);
+const date = ref<Date>();
 
 client.get("/group/channel").then((response) => {
   const slackLogs: Message[][] = response.data;
   channelLog.value = slackLogs
-    .filter((slackLog) => {
-      return slackLog[0].channelId === routeParamChannelId;
-    })
-    .flat()
-    .reverse();
-  channelName.value = channelLog.value[0].channelName;
+  .filter((slackLog) => {
+    return slackLog[0].channelId === routeParamChannelId;
+  })
+  .flat()
+  .reverse();
+  channelLog.value.forEach((log) => {
+    date.value = new Date(parseInt(log.eventTs) * 1000);
+    messageTime.value.push(date.value.toLocaleString());
+  });
+  console.log(messageTime)
 });
 </script>
 
@@ -37,7 +42,7 @@ client.get("/group/channel").then((response) => {
     >
       <v-row>
         <div class="mr-5">{{ log.user }}</div>
-        <div>{{ log.eventTs }}</div>
+        <div class="time-font pt-1">{{ messageTime[i] }}</div>
       </v-row>
       <v-row>{{ log.text }}</v-row>
     </v-card>
@@ -50,5 +55,9 @@ client.get("/group/channel").then((response) => {
   top: 50px;
   left: 13%;
   width: 75%;
+}
+
+.time-font{
+  font-size: 10px;
 }
 </style>
