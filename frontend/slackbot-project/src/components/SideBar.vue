@@ -29,7 +29,7 @@ client.get("/group/channel").then((response) => {
     <div v-for="(name, i) in channelName" v-bind:key="i">
       <a
         :href="'/channels/' + channelId[channelName.indexOf(name)]"
-        class="white-text text-h6"
+        class="white-text text-h5"
       >
         {{ name }}
       </a>

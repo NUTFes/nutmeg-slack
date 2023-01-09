@@ -17,30 +17,26 @@ const channelName = ref<string>("");
 
 client.get("/group/channel").then((response) => {
   const slackLogs: Message[][] = response.data;
-
-  channelLog.value = slackLogs.filter((slackLog)=>{
-    return slackLog[0].channelId === routeParamChannelId
-  }).flat().reverse();
+  channelLog.value = slackLogs
+    .filter((slackLog) => {
+      return slackLog[0].channelId === routeParamChannelId;
+    })
+    .flat()
+    .reverse();
   channelName.value = channelLog.value[0].channelName;
 });
 </script>
 
 <template>
-  <v-row
-    align="center"
-    class="mt-5 flex-column"
-  >
-    <v-row
-      class="text-h4"
-    >{{ channelName }}</v-row>
-    <v-card v-for="log, i in channelLog" :key="i"
+  <v-row align="center" class="mt-5 flex-column">
+    <v-card
+      v-for="(log, i) in channelLog"
+      :key="i"
       outlined
       class="mb-2 card-container"
     >
       <v-row>
-        <div
-          class ="mr-5"
-        >{{ log.user }}</div>
+        <div class="mr-5">{{ log.user }}</div>
         <div>{{ log.eventTs }}</div>
       </v-row>
       <v-row>{{ log.text }}</v-row>
@@ -49,7 +45,10 @@ client.get("/group/channel").then((response) => {
 </template>
 
 <style>
-  .card-container{
-    width: 70%;
-  }
+.card-container {
+  position: fixed;
+  top: 50px;
+  left: 13%;
+  width: 75%;
+}
 </style>
