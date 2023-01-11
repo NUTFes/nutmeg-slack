@@ -26,7 +26,7 @@ func main() {
 	// CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		// TODO: 本番環境のURLも許可する
-		AllowOrigins: []string{"http://localhost:8080"},
+		AllowOrigins: []string{"http://localhost:8080", "http://localhost:3001"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
 	e.Use(middleware.Logger())

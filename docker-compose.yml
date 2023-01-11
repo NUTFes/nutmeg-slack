@@ -55,6 +55,7 @@ services:
   view:
     build:
       context: ./frontend
+    working_dir: /app/slackbot-project
     volumes:
       - ./frontend:/app
     command: 'npm run serve'
@@ -62,5 +63,17 @@ services:
       - '8080'
     ports:
       - '8080:8080'
+    tty: true
+    stdin_open: true
+
+  vite-view:
+    build:
+      context: ./vite
+    #working_dir: /app/slackbot-project
+    volumes:
+      - ./vite:/app
+    #command: 'npm run serve'
+    ports:
+      - '3001:3001'
     tty: true
     stdin_open: true

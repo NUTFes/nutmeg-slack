@@ -3,3 +3,4 @@ mongo/
 slackbot/clients/__pycache__/
 api/tmp
 frontend/slackbot-project/node_modules
+vite/node_modules
