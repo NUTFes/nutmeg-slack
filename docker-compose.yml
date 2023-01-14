@@ -52,15 +52,14 @@ services:
     depends_on:
       - mongo
 
-  view:
+  vite-view:
     build:
-      context: ./frontend
+      context: ./vite
+    working_dir: /app
     volumes:
-      - ./frontend:/app
-    command: 'npm run serve'
-    expose:
-      - '8080'
+      - ./vite:/app
+    command: 'npm run dev'
     ports:
-      - '8080:8080'
+      - '3001:3001'
     tty: true
     stdin_open: true
