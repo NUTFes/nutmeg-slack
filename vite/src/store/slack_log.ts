@@ -1,6 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
 import { createStore } from 'vuex'
-
 import { Message } from '@/types'
 
 interface SlackLogState {
@@ -8,6 +7,7 @@ interface SlackLogState {
   channelNameList: string[]
   channelIdList: string[]
   channelLog: Message[]
+  messageTime: string[]
 }
 
 const client: AxiosInstance = axios.create({
@@ -23,6 +23,7 @@ export const store = createStore({
     channelNameList: [],
     channelIdList: [],
     channelLog: [],
+    messageTime: [],
   },
 
   getters: {
@@ -30,6 +31,7 @@ export const store = createStore({
     channelNameList: (state: SlackLogState) => state.channelNameList,
     channelIdList: (state: SlackLogState) => state.channelIdList,
     channelLog: (state: SlackLogState) => state.channelLog,
+    messageTime: (state: SlackLogState) => state.messageTime,
   },
 
   mutations: {
@@ -45,6 +47,9 @@ export const store = createStore({
     setChannelLog(state: SlackLogState, channelLog: Message[]) {
       state.channelLog = channelLog
     },
+    setMessageTime(state: SlackLogState, messageTime: string[]) {
+      state.messageTime = messageTime
+    }
   },
 
   actions: {
@@ -53,27 +58,29 @@ export const store = createStore({
         const slackLogs: Message[][] = res.data
         const channelNameList: string[] = []
         const channelIdList: string[] = []
-        const channelLog: Message[] = []
+        const channelLog: Message[][] = []
+        const messageTime: string[] = []
 
-        slackLogs.forEach((slackLog) => {
+        slackLogs.forEach((slackLog: Message[]) => {
           channelNameList.push(slackLog[0].channelName)
           channelIdList.push(slackLog[0].channelId)
+
           if (slackLog[0].channelId === channelId) {
             const channelName = slackLog[0].channelName
             commit('setChannelName', channelName)
-            channelLog.push(slackLog[0])
+            channelLog.push(slackLog)
             channelLog.flat().reverse()
             commit('setChannelLog', channelLog.flat().reverse())
           }
         })
+        channelLog[0].forEach((log) => {
+          const date = new Date(parseInt(log.eventTs) * 1000)
+          messageTime.push(date.toLocaleString())
+        })
         commit('setChannelNameList', channelNameList)
         commit('setChannelIdList', channelIdList)
+        commit('setMessageTime', messageTime)
       })
-      // const channelNameList = res.data.map((channel: any) => channel.name);
-      // const channelIdList = res.data.map((channel: any) => channel.id);
-      // const channelNameList = ["general", "random", "test", channelId];
-      // commit("setChannelNameList", channelNameList);
-      //commit("setChannelIdList", channelIdList);
     },
   },
 })

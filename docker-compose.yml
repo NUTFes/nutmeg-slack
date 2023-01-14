@@ -52,27 +52,13 @@ services:
     depends_on:
       - mongo
 
-  view:
-    build:
-      context: ./frontend
-    working_dir: /app/slackbot-project
-    volumes:
-      - ./frontend:/app
-    command: 'npm run serve'
-    expose:
-      - '8080'
-    ports:
-      - '8080:8080'
-    tty: true
-    stdin_open: true
-
   vite-view:
     build:
       context: ./vite
-    #working_dir: /app/slackbot-project
+    working_dir: /app
     volumes:
       - ./vite:/app
-    #command: 'npm run serve'
+    command: 'npm run dev'
     ports:
       - '3001:3001'
     tty: true

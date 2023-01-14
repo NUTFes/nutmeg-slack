@@ -1,34 +1,10 @@
 <script lang="ts" setup>
-  import { ref } from 'vue'
-  import axios, { AxiosInstance } from 'axios'
-  import { useRoute } from 'vue-router'
-  import { Message } from '@/types'
+  import { computed } from 'vue'
+  import { useStore } from 'vuex'
 
-  const client: AxiosInstance = axios.create({
-    baseURL: 'http://localhost:1323',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-  const route = useRoute()
-  const routeParamChannelId = route.params.channelId
-  const channelLog = ref<Message[]>([])
-  const messageTime = ref<string[]>([])
-  const date = ref<Date>()
-
-  client.get('/group/channel').then((response) => {
-    const slackLogs: Message[][] = response.data
-    channelLog.value = slackLogs
-      .filter((slackLog) => {
-        return slackLog[0].channelId === routeParamChannelId
-      })
-      .flat()
-      .reverse()
-    channelLog.value.forEach((log) => {
-      date.value = new Date(parseInt(log.eventTs) * 1000)
-      messageTime.value.push(date.value.toLocaleString())
-    })
-  })
+  const store = useStore()
+  const channelLog = computed(() => store.getters.channelLog)
+  const messageTime = computed(() => store.getters.messageTime)
 </script>
 
 <template>

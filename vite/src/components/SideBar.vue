@@ -1,47 +1,37 @@
 <script lang="ts" setup>
-  import { ref, computed } from 'vue'
-  import { useStore } from 'vuex'
-  import axios, { AxiosInstance } from 'axios'
-  import { Message } from '@/types'
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
 
-  // const client: AxiosInstance = axios.create({
-  //   baseURL: "http://localhost:1323",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  // });
-
-  // const channelNameList = ref<string[]>([]);
-  // const channelIdList = ref<string[]>([]);
-
-  // client.get("/group/channel").then((response) => {
-  //   const slackLogs: Message[][] = response.data;
-  //   slackLogs.forEach((slackLog) => {
-  //     channelNameList.value.push(slackLog[0].channelName);
-  //     channelIdList.value.push(slackLog[0].channelId);
-  //   });
-  // });
   const store = useStore()
+  const route = useRoute()
   const channelNameList = computed(() => store.getters.channelNameList)
   const channelIdList = computed(() => store.getters.channelIdList)
+  const routeParamChannelId = route.params.channelId
 </script>
 
 <template>
   <div class="sidebar">
     <div class="text-h5 white-text">NUTMEG</div>
     <div class="text-h6 white-text py-2">Channels</div>
-    <div v-for="(name, i) in channelNameList" v-bind:key="i" class="mb-3">
-      <!-- <a
-        :href="'/channels/' + channelId[channelName.indexOf(name)]"
-        class="white-text text-h6"
-      > -->
-      <RouterLink
+    <div
+        v-for="(name, i) in channelNameList" v-bind:key="i" class="mb-3"
+      >
+      <!-- 後でrouter-linkにする -->
+      <!-- <RouterLink
         :to="'/channels/' + channelIdList[channelNameList.indexOf(name)]"
         class="white-text trext-h6"
         active-class="font-weight-bold"
       >
         {{ name }}
-      </RouterLink>
+      </RouterLink> -->
+      <a :href="`/channels/${channelIdList[channelNameList.indexOf(name)]}`"
+        class="white-text trext-h6"
+        active-class="font-weight-bold"
+      >
+        {{ name }}
+      </a>
+      <RouterView name=MessageLog></RouterView>
     </div>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import { useStore } from 'vuex'
   import { useRoute } from 'vue-router'
-  import { onMounted, watch } from 'vue'
+  import { onMounted } from 'vue'
   import Header from '@/components/Header.vue'
   import MessageLog from '@/components/MessageLog.vue'
   import SideBar from '@/components/SideBar.vue'
