@@ -4,7 +4,7 @@ services:
     container_name: nsb
     build: ./slackbot
     env_file:
-      - .env.development
+      - env/dev.env
     volumes:
       - ./slackbot:/work
     ports:

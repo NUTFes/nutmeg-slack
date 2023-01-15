@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"log"
+	"os"
 
 	"github.com/NUTFes/nutmeg-slack/db"
 	"go.mongodb.org/mongo-driver/bson"
@@ -25,8 +26,9 @@ func NewMongoDBRepository(c *mongo.Client) *mongoDBRepository {
 
 // 全てのログ情報を取得する
 func (mongoDBRepository) AllCollection() ([]bson.M, error) {
+	dbName := os.Getenv("DB_NAME")
 	client := db.ConnectMongo()
-	col, err := client.Database("nutfes_slack_log_dev").Collection("log").Find(context.Background(), bson.M{})
+	col, err := client.Database(dbName).Collection("log").Find(context.Background(), bson.M{})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,8 +41,9 @@ func (mongoDBRepository) AllCollection() ([]bson.M, error) {
 
 // channelのid情報とnameを取得する
 func (mongoDBRepository) GetChannelInfo() ([]bson.M, error) {
+	dbName := os.Getenv("DB_NAME")
 	client := db.ConnectMongo()
-	col, err := client.Database("nutfes_slack_log_dev").Collection("channel").Find(context.Background(), bson.M{})
+	col, err := client.Database(dbName).Collection("channel").Find(context.Background(), bson.M{})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,8 +56,9 @@ func (mongoDBRepository) GetChannelInfo() ([]bson.M, error) {
 
 // userのid情報とnameを取得する
 func (mongoDBRepository) GetUserInfo() ([]bson.M, error) {
+	dbName := os.Getenv("DB_NAME")
 	client := db.ConnectMongo()
-	col, err := client.Database("nutfes_slack_log_dev").Collection("user").Find(context.Background(), bson.M{})
+	col, err := client.Database(dbName).Collection("user").Find(context.Background(), bson.M{})
 	if err != nil {
 		log.Fatal(err)
 	}
