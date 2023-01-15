@@ -1,13 +1,10 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
+  import { computed } from 'vue'
+  import { useStore } from 'vuex'
 
   const store = useStore()
-  const route = useRoute()
   const channelNameList = computed(() => store.getters.channelNameList)
   const channelIdList = computed(() => store.getters.channelIdList)
-  const routeParamChannelId = route.params.channelId
 </script>
 
 <template>

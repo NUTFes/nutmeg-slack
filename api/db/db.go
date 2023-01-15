@@ -3,18 +3,17 @@ package db
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-
-
 func ConnectMongo() *mongo.Client {
 	// TODO: ここで環境変数から取得するようにする
 	credential := options.Credential{
-		Username: "root",
-		Password: "password",
+		Username: os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
 	}
 	clientOptions := options.Client().ApplyURI("mongodb://mongo").SetAuth(credential)
 	client, err := mongo.Connect(context.Background(), clientOptions)

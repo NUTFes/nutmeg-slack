@@ -10,13 +10,19 @@ app = App(
   signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
 )
 
+db_user = os.environ.get("DB_USER")
+db_password = os.environ.get("DB_PASSWORD")
+db_name = os.environ.get("DB")
+db_port = os.environ.get("DB_PORT")
+db_host = os.environ.get("DB_HOST")
+
 @app.event("message")
 def monitoring_nutfes_slack(body: dict):
   """ Slackのメッセージを監視する
   Args:
     body (dict): Slackのメッセージ
   """
-  mongo = MongoDB("mongo", 27017, "root", "password", os.environ.get("DB"), "log")
+  mongo = MongoDB(db_host, db_port, db_user , db_password, db_name, "log")
   mongo.insert(body)
   register_channel_name()
   register_user_name()
@@ -29,7 +35,7 @@ def register_channel_name():
   channels = response.json()["channels"]
   replace_channel_dict = {channel["id"]:channel["name"] for channel in channels}
 
-  mongo = MongoDB("mongo", 27017, "root", "password", os.environ.get("DB"), "channel")
+  mongo = MongoDB(db_host, db_port, db_user , db_password, db_name, "channel")
   registered_channel_dict = mongo.find()
   if registered_channel_dict == None:
     mongo.insert(replace_channel_dict)
@@ -44,7 +50,7 @@ def register_user_name():
   users = response.json()["members"]
   replace_user_dict = {user["id"]:user["profile"]["display_name"] for user in users}
 
-  mongo = MongoDB("mongo", 27017, "root", "password", os.environ.get("DB"), "user")
+  mongo = MongoDB(db_host, db_port, db_user , db_password, db_name,"user")
   registered_user_dict = mongo.find()
   if registered_user_dict == None:
     mongo.insert(replace_user_dict)

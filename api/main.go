@@ -1,10 +1,13 @@
 package main
 
 import (
+	"log"
+
 	"github.com/NUTFes/nutmeg-slack/controller"
 	"github.com/NUTFes/nutmeg-slack/db"
 	"github.com/NUTFes/nutmeg-slack/repository"
 	"github.com/NUTFes/nutmeg-slack/usecase"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -12,6 +15,7 @@ import (
 func main() {
 	e := echo.New()
 	client := db.ConnectMongo()
+	loadEnv()
 	repository := repository.NewMongoDBRepository(client)
 	usecase := usecase.NewMongoDBUsecase(repository)
 	controller := controller.NewMongoDBController(usecase)
@@ -26,11 +30,19 @@ func main() {
 	// CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		// TODO: 本番環境のURLも許可する
-		AllowOrigins: []string{"http://localhost:8080", "http://localhost:3001"},
+		AllowOrigins: []string{"http://localhost:3001"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
 	e.Logger.Fatal(e.Start(":1323"))
+}
+
+// 環境変数を読み込む
+func loadEnv() {
+	err := godotenv.Load("env/dev.env")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
