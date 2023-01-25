@@ -79,7 +79,7 @@ export const store = createStore({
         })
         commit('setChannelNameList', channelNameList)
         commit('setChannelIdList', channelIdList)
-        commit('setMessageTime', messageTime)
+        commit('setMessageTime', messageTime.reverse())
       })
     },
   },
