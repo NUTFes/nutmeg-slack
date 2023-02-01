@@ -14,14 +14,6 @@
     <div
         v-for="(name, i) in channelNameList" v-bind:key="i" class="mb-3"
       >
-      <!-- 後でrouter-linkにする -->
-      <!-- <RouterLink
-        :to="'/channels/' + channelIdList[channelNameList.indexOf(name)]"
-        class="white-text trext-h6"
-        active-class="font-weight-bold"
-      >
-        {{ name }}
-      </RouterLink> -->
       <a :href="`/channels/${channelIdList[channelNameList.indexOf(name)]}`"
         class="white-text trext-h6"
         active-class="font-weight-bold"

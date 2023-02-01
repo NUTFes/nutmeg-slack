@@ -11,7 +11,7 @@ interface SlackLogState {
 }
 
 const client: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:1323',
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
