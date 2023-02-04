@@ -13,7 +13,6 @@ services:
     command: 'python main.py'
     depends_on:
       - mongo
-      - mongo-express
 
   mongo:
     image: mongo
