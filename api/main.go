@@ -41,7 +41,7 @@ func main() {
 
 // 環境変数を読み込む
 func loadEnv() {
-	err := godotenv.Load("env/dev.env")
+	err := godotenv.Load("env/.env")
 	if err != nil {
 		log.Fatal(err)
 	}
