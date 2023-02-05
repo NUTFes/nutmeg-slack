@@ -1,14 +1,16 @@
 import os
 import requests
 from slack_bolt import App
-from slack_bolt.adapter.socket_mode import SocketModeHandler
-from pymongo import MongoClient
 from clients.mongodb import MongoDB
+from slack_bolt.adapter.flask import SlackRequestHandler
 
 app = App(
+  process_before_response=True,
   token=os.environ.get("SLACK_BOT_TOKEN"),
   signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
 )
+
+handler = SlackRequestHandler(app)
 
 db_user = os.environ.get("DB_USER")
 db_password = os.environ.get("DB_PASSWORD")
