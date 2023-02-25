@@ -51,3 +51,13 @@ services:
     stdin_open: true
     environment:
       - vite/.env
+
+  nginx:
+    image: nginx
+    container_name: my-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./html:/usr/share/nginx/html
+    restart: always
