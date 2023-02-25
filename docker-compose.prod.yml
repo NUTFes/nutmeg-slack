@@ -44,9 +44,6 @@ services:
     working_dir: /app
     volumes:
       - ./vite:/app
-    command: 'npm run dev'
-    ports:
-      - '3001:3001'
     tty: true
     stdin_open: true
     environment:
