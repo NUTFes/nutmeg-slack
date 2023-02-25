@@ -57,5 +57,6 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./html:/usr/share/nginx/html
-      - ./vite-view/dist:/var/www/html
+      - ./vite/dist:/var/www/html
     restart: always
+
