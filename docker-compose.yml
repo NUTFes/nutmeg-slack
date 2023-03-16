@@ -65,3 +65,6 @@ services:
     stdin_open: true
     environment:
       - VITE_API_URL=http://localhost:1323
+      - VITE_KEYCLOAK_URL=https://account.nutfes.net/
+      - VITE_KEYCLOAK_REALM=NUTFES
+      - VITE_KEYCLOAK_CLIENT_ID=slack-auth
