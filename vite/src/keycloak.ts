@@ -18,10 +18,6 @@ const Login = (onAuthenticatedCallback: CallbackOneParam) => {
     .then(function (authenticated) {
       authenticated ? onAuthenticatedCallback() : alert("non authenticated");
     })
-    .catch((e) => {
-      console.dir(e);
-      console.log(`keycloak init exception: ${e}`);
-    });
 };
 
 const KeyCloakService = {
