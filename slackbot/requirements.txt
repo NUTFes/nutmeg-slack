@@ -2,3 +2,5 @@ requests
 flask
 slack_bolt
 pymongo
+gspread
+

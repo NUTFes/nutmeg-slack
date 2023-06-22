@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "lustrous-baton-390508",
+  "private_key_id": "40132779355a9606d11b14061c4fe6e0d1105edd",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCtJmk9JvZidrk5\nHlGoFbnFTJy94dE5kF7eYYwmvFmwkP9D+7qXWVUd6XcgdzEfE8MnadbkJdbL3IxO\nvAyweykiyO/waiL5N9oWhp9mMIb7d6mEO/2yUAS8ZqllaNW5Pb6jSbktRsi5M1nH\ngSKeDE/J0egvQCtrKt1M9MSUcuLanyH2eyLXm+EyiCMI4TgdmUnEquaKRhFDVxcu\nhuMYLxDmwRXV8suGXh7UoBmm/lNLa/tZ8Et/mgNDuCIquvlV0U0xu3TeNtUY3OEt\nyXhTKL1jUNxH3Wt2mEuJ/FIjqLSqM6D+F0NtxrapsMhi4mcUl3U7Lo+qZiPzXMXZ\nsp9J4yQxAgMBAAECggEAA+av8YqdHqF8YBRe0XnIYUgt/fkgnpSyJiDUGe3GZrke\nsE2WbOQ2tJFj9KV1vjSefCheSO5/9FgF/j+uWLDuxX3inpd8fzCi+lREG5+lgF1s\ncQam5uFTylo9sX3KBUyJCg6NmYp62CAXWlsERZUwSu1jFDQuzYWSglruEHUqR1a0\nftOHbO7/00oocg56+GjEMeRVn41QtpjJA//UKy9wlkh9cukieCikfa1hkYLvZ5JI\njvVjtBSD00Dz1zQYse+7OAj0NdnQpk+gh7sClIFsNiP4Pv07WAe4jzymvGrayQze\nf5hwAy0klOpAHcO642OBANPGwQT2O4hWgagGvMh+1QKBgQDkVJUfo8b3nTm6YEy8\nm0mQ6v0lHQKYEgdAYv6BcO5y5J+OYYh3cnaruDfRI4ZzDZotu0tjq3ROjqFxAqht\nGb0bw8JphyQfVi6u9eaFmRDhBrfwOTzpO91AmODG/1cjV07WiTKoKesyTCFYT4ak\nFzA2POL38Gry7hsrQ/Kj3vmZhQKBgQDCIfyiObAw23OAdt2iWC7/ytaYNfi28PFW\nivQyDTOlS3WMVZdiJSa5q50XqwJLgx4Ds8gDda7frXCH/AS+Hx9MMIZXf1bGfjFU\npWe+LgWAJZMVHV8jywrRsCdnmpWE55JKlz+D3gYjaUXDhYReM/PPEtbKdFJpHLyC\nFLrHkXSpvQKBgFPKPlc4EOH5Tp/4ivCDxAFsWq1t8e/AXezg5yi1Oqvq/iqP3DaJ\nSMdHeSREdyhti3DQ1J+k4a+aY+BG62vuEBnKQuPa9gSR6dvG3WuVej456vI67wFg\nOJdmAsbEGUQc3A+alX5ks6znhy0TMgOxhr3ApkH6diTkABBmhPph7xLJAoGAYFbT\nc4IjYKuXDxpt9KHEeSYlBpZKHidF7Qe6FZidl5rx87mKDaeYJy32IIe59NVVsMqo\nKKdfKBt/K8yyYdM6CepO0N8dphV7z6Dh8ewOyMBc1G6mBzI85UCA3ZZGOxVccO3M\nFFm7PBmDCHua69DmXk3gD8pYF1euaPN2mZEijxUCgYEArbADtIp9wpQXZvhntAgA\n9FdrswcbR3udhCmQT8+M3SMxMKvIPjYFcNfOJBl64Ac0d/FW8gu/QQigvQ52bElE\nd0mrta5VSOVMj8IMz8yq9G0CLVzG5OI+pW+n4VqtOT8mwySMOpjBzD5uMHhYwKol\ntPL6uWv4redg+IbrDHX3YCg=\n-----END PRIVATE KEY-----\n",
+  "client_email": "googlesheets-python@lustrous-baton-390508.iam.gserviceaccount.com",
+  "client_id": "115562275404090947230",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/googlesheets-python%40lustrous-baton-390508.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
