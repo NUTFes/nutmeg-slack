@@ -1,11 +1,16 @@
 import os
 import requests
-from slack_bolt import App
+from slack_bolt import App, Ack, BoltResponse, BoltContext, Respond, Say
 from clients.mongodb import MongoDB
 from slack_bolt.adapter.flask import SlackRequestHandler
 import gspread
-
+import logging
+from logging import Logger
+from typing import Callable, Dict, List
 from oauth2client.service_account import ServiceAccountCredentials
+from slack_sdk import WebClient
+import re
+import datetime
 
 scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
 
@@ -21,10 +26,10 @@ SPREADSHEET_KEY = '1eu6g0o5bVSAOexjC5COzgZaqjzGSJVqrtyousFv8KCc'
 # 共有設定したGoogleSheetのsheet1を開く
 worksheet = gc.open_by_key(SPREADSHEET_KEY).sheet1
 
-import_value = int(worksheet.acell('A1').value)
+# import_value = int(worksheet.acell('A1').value)
 
-export_value = import_value+100
-worksheet.update_cell(1, 2, export_value)
+# export_value = import_value+100
+# worksheet.update_cell(1, 2, export_value)
 
 
 app = App(
@@ -35,6 +40,10 @@ app = App(
 
 # ngrok を使っている場合 http://localhost:4040/inspect/http でも確認できますが
 # リスナーのログと同時に見るためにペイロードを標準出力に表示するだけの middleware です
+@app.use
+def log_request(logger: Logger, body : dict, next: Callable[[], BoltResponse]):
+  logger.info(body)
+  next()
 
 handler = SlackRequestHandler(app)
 
@@ -45,18 +54,84 @@ db_port = os.environ.get("DB_PORT")
 db_host = os.environ.get("DB_HOST")
 
 @app.event("app_mention")
-def handle_mentions(say):
+def handle_mentions(ack, context, body, say, logger, request):
+  mention = body["event"]
+  user= mention["user"]
+  temp_text = mention["text"]
+  channel = mention["channel"]
+  thread_ts = mention["ts"]
 
-  say(
-    blocks=blocks_input_form()
-  )
+  # botのidを削除してテキスト内容飲みにする
+  text = re.sub(r'\<.*?\>', '', temp_text)
 
-@app.action("button-submit-aciton")
-def handle_button_submit(ack: Ack, body: dict, ):
-  ack()
-  say("ぼたんが押されました")
-  print(body)
+  # Unix時刻を秒とマイクロ秒に分割
+  seconds = int(float(thread_ts))
+  microseconds = int((float(thread_ts) - seconds) * 1000000)
 
+  # Unixエポック時間を日付に変換
+  date = datetime.datetime.fromtimestamp(seconds) + datetime.timedelta(hours=9)
+
+  # マイクロ秒を追加
+  date_with_microseconds = date + datetime.timedelta(microseconds=microseconds)
+
+  # 日付を文字列に変換
+  date_string = date_with_microseconds.strftime('%Y/%m/%d %H:%M:%S')
+  print(date_string)
+
+  url = "https://slack.com/api/users.list"
+  response = requests.get(url, headers={"Authorization": "Bearer " + os.environ.get("SLACK_BOT_TOKEN")})
+  users = response.json()["members"]
+  replace_user_dict = {user["id"]:user["profile"]["display_name"] for user in users}
+  # print(replace_user_dict)
+  sent_user_name = replace_user_dict.get(user)
+  print(replace_user_dict.get(user))
+   
+
+  insert_text=[date_string, sent_user_name, text]
+
+
+  print(f"メンションされました:{text}")
+  
+  # google sheets に書き込み
+  last_row_index = len(worksheet.col_values(1)) + 1
+  if not insert_text in worksheet.get_all_values():
+    worksheet.insert_row(insert_text, last_row_index)
+    # say(','.join(insert_text))
+    say("スプレッドシートに登録しました.\nhttps://docs.google.com/spreadsheets/d/1eu6g0o5bVSAOexjC5COzgZaqjzGSJVqrtyousFv8KCc/edit#gid=0")
+  
+  print(last_row_index, insert_text)
+  
+  
+  # say(
+  #   blocks=blocks_input_form()
+  # )
+
+
+# @app.command("/register-googlesheet")
+# def handle_register_slashcommand(ack: Ack, body: dict, client: WebClient):
+#   ack()
+#   client.views_open(
+#     trigger_id=body["trigger_id"],
+#     view=build_modal_view(),
+#   )
+
+
+# @app.view("modal-id")
+# def handle_view_events(ack: Ack, view: dict, logger: logging.Logger):
+#   inputs = view["state"]["values"]
+
+#   question = input.get("question-block", {}).get("plain_text_input-action", {}).get("value")
+
+#   logger.info(f"モーダルを受け付けました\n 内容は: {question}")
+#   ack()
+  
+
+
+# @app.action("button-submit-aciton")
+# def handle_button_submit(ack: Ack, body: dict, say: Say):
+#   ack()
+#   say("ぼたんが押されました")
+#   print(body.user.id)
 
 @app.event("message")
 def monitoring_nutfes_slack(body: dict):
@@ -97,6 +172,48 @@ def register_user_name():
   if registered_user_dict == None:
     mongo.insert(replace_user_dict)
   mongo.update(registered_user_dict, replace_user_dict)
+  
+
+
+
+def build_modal_view():
+  return {
+    "type": "modal",
+    "callback_id": "modal-id",
+    "title": {
+      "type": "plain_text",
+      "text": "スプレッドシート登録モーダル",
+      "emoji": True
+    },
+    "submit": {
+      "type": "plain_text",
+      "text": "Submit",
+      "emoji": True
+    },
+    "close": {
+      "type": "plain_text",
+      "text": "Cancel",
+      "emoji": True
+    },
+    "blocks": [
+      {
+        "type": "input",
+        "block_id": "question-block",
+        "element": {
+          "type": "plain_text_input",
+          "multiline": True,
+          "action_id": "plain_text_input-action"
+        },
+        "label": {
+          "type": "plain_text",
+          "text": "スプレッドシートに登録する内容を入力してください．",
+          "emoji": True
+        }
+      }
+    ]
+  }
+
+
 
 def blocks_input_form():
   return [
@@ -116,7 +233,7 @@ def blocks_input_form():
       "element": {
         "type": "plain_text_input",
         "multiline": True,
-        "action_id": "plain_text_input-action"
+        "action_id": "plain_text_input-action-1"
       },
       "label": {
         "type": "plain_text",
@@ -128,7 +245,7 @@ def blocks_input_form():
       "type": "input",
       "element": {
         "type": "plain_text_input",
-        "action_id": "plain_text_input-action"
+        "action_id": "plain_text_input-action-2"
       },
       "label": {
         "type": "plain_text",

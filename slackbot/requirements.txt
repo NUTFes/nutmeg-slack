@@ -3,4 +3,8 @@ flask
 slack_bolt
 pymongo
 gspread
-
+Logger
+typing
+slack_sdk
+re
+datetime
