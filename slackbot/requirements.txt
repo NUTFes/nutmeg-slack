@@ -6,5 +6,4 @@ gspread
 Logger
 typing
 slack_sdk
-re
 datetime

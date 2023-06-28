@@ -4,11 +4,9 @@ from slack_bolt import App, Ack, BoltResponse, BoltContext, Respond, Say
 from clients.mongodb import MongoDB
 from slack_bolt.adapter.flask import SlackRequestHandler
 import gspread
-import logging
 from logging import Logger
 from typing import Callable, Dict, List
 from oauth2client.service_account import ServiceAccountCredentials
-from slack_sdk import WebClient
 import re
 import datetime
 
@@ -26,11 +24,6 @@ SPREADSHEET_KEY = '1eu6g0o5bVSAOexjC5COzgZaqjzGSJVqrtyousFv8KCc'
 # 共有設定したGoogleSheetのsheet1を開く
 worksheet = gc.open_by_key(SPREADSHEET_KEY).sheet1
 
-# import_value = int(worksheet.acell('A1').value)
-
-# export_value = import_value+100
-# worksheet.update_cell(1, 2, export_value)
-
 
 app = App(
   process_before_response=True,
@@ -38,12 +31,6 @@ app = App(
   signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
 )
 
-# ngrok を使っている場合 http://localhost:4040/inspect/http でも確認できますが
-# リスナーのログと同時に見るためにペイロードを標準出力に表示するだけの middleware です
-@app.use
-def log_request(logger: Logger, body : dict, next: Callable[[], BoltResponse]):
-  logger.info(body)
-  next()
 
 handler = SlackRequestHandler(app)
 
@@ -53,6 +40,8 @@ db_name = os.environ.get("DB_NAME")
 db_port = os.environ.get("DB_PORT")
 db_host = os.environ.get("DB_HOST")
 
+
+
 @app.event("app_mention")
 def handle_mentions(ack, context, body, say, logger, request):
   mention = body["event"]
@@ -61,7 +50,7 @@ def handle_mentions(ack, context, body, say, logger, request):
   channel = mention["channel"]
   thread_ts = mention["ts"]
 
-  # botのidを削除してテキスト内容飲みにする
+  # botのidを削除してテキスト内容のみにする
   text = re.sub(r'\<.*?\>', '', temp_text)
 
   # Unix時刻を秒とマイクロ秒に分割
@@ -76,62 +65,23 @@ def handle_mentions(ack, context, body, say, logger, request):
 
   # 日付を文字列に変換
   date_string = date_with_microseconds.strftime('%Y/%m/%d %H:%M:%S')
-  print(date_string)
 
+  # 送信者の名前をテキストで取得する
   url = "https://slack.com/api/users.list"
   response = requests.get(url, headers={"Authorization": "Bearer " + os.environ.get("SLACK_BOT_TOKEN")})
   users = response.json()["members"]
   replace_user_dict = {user["id"]:user["profile"]["display_name"] for user in users}
-  # print(replace_user_dict)
-  sent_user_name = replace_user_dict.get(user)
-  print(replace_user_dict.get(user))
+  sent_user_name = replace_user_dict.get(user)git
    
-
   insert_text=[date_string, sent_user_name, text]
 
-
-  print(f"メンションされました:{text}")
-  
   # google sheets に書き込み
   last_row_index = len(worksheet.col_values(1)) + 1
   if not insert_text in worksheet.get_all_values():
     worksheet.insert_row(insert_text, last_row_index)
-    # say(','.join(insert_text))
+
     say("スプレッドシートに登録しました.\nhttps://docs.google.com/spreadsheets/d/1eu6g0o5bVSAOexjC5COzgZaqjzGSJVqrtyousFv8KCc/edit#gid=0")
   
-  print(last_row_index, insert_text)
-  
-  
-  # say(
-  #   blocks=blocks_input_form()
-  # )
-
-
-# @app.command("/register-googlesheet")
-# def handle_register_slashcommand(ack: Ack, body: dict, client: WebClient):
-#   ack()
-#   client.views_open(
-#     trigger_id=body["trigger_id"],
-#     view=build_modal_view(),
-#   )
-
-
-# @app.view("modal-id")
-# def handle_view_events(ack: Ack, view: dict, logger: logging.Logger):
-#   inputs = view["state"]["values"]
-
-#   question = input.get("question-block", {}).get("plain_text_input-action", {}).get("value")
-
-#   logger.info(f"モーダルを受け付けました\n 内容は: {question}")
-#   ack()
-  
-
-
-# @app.action("button-submit-aciton")
-# def handle_button_submit(ack: Ack, body: dict, say: Say):
-#   ack()
-#   say("ぼたんが押されました")
-#   print(body.user.id)
 
 @app.event("message")
 def monitoring_nutfes_slack(body: dict):
@@ -173,7 +123,6 @@ def register_user_name():
     mongo.insert(replace_user_dict)
   mongo.update(registered_user_dict, replace_user_dict)
   
-
 
 
 def build_modal_view():
