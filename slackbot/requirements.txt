@@ -2,3 +2,9 @@ requests
 flask
 slack_bolt
 pymongo
+gspread
+Logger
+typing
+slack_sdk
+datetime
+oauth2client
