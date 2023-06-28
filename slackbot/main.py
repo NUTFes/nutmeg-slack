@@ -1,15 +1,12 @@
 import os
 import requests
-from slack_bolt import App, Ack, BoltResponse, BoltContext, Respond, Say
+from slack_bolt import App
 from clients.mongodb import MongoDB
 from slack_bolt.adapter.flask import SlackRequestHandler
 import gspread
-from logging import Logger
-from typing import Callable, Dict, List
 from oauth2client.service_account import ServiceAccountCredentials
 import re
 import datetime
-from template import modal
 
 scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
 
@@ -20,7 +17,7 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name('lustrous-baton-3
 gc = gspread.authorize(credentials)
 
 # スプレッドシートキー(urlの"/d"と"/edit"の間の値)を[SPREADSHEET_KEY]に格納する
-SPREADSHEET_KEY = '1eu6g0o5bVSAOexjC5COzgZaqjzGSJVqrtyousFv8KCc'
+SPREADSHEET_KEY = os.environ("SPREADSHEET_KEY")
 
 # 共有設定したGoogleSheetのsheet1を開く
 worksheet = gc.open_by_key(SPREADSHEET_KEY).sheet1
@@ -44,11 +41,15 @@ db_host = os.environ.get("DB_HOST")
 
 
 @app.event("app_mention")
-def handle_mentions(body, say):
+def handle_mentions(body: dict, say):
+  """ botをメンションしたときに動作する
+  Args:
+    body (dict): Slackのメッセージ
+    say: botがメッセージするメソッド
+  """
   mention = body["event"]
   user= mention["user"]
   temp_text = mention["text"]
-  channel = mention["channel"]
   thread_ts = mention["ts"]
 
   # botのidを削除してテキスト内容のみにする
