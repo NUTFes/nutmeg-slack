@@ -5,8 +5,6 @@ WORKDIR /work
 RUN apt-get update -y && apt-get install -y vim
 
 RUN pip install --upgrade pip
-RUN pip install oauth2client
-
 
 COPY requirements.txt /usr/local
 RUN pip install -r /usr/local/requirements.txt

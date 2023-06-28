@@ -9,6 +9,7 @@ from typing import Callable, Dict, List
 from oauth2client.service_account import ServiceAccountCredentials
 import re
 import datetime
+from template import modal
 
 scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
 
@@ -43,7 +44,7 @@ db_host = os.environ.get("DB_HOST")
 
 
 @app.event("app_mention")
-def handle_mentions(ack, context, body, say, logger, request):
+def handle_mentions(body, say):
   mention = body["event"]
   user= mention["user"]
   temp_text = mention["text"]
@@ -71,17 +72,16 @@ def handle_mentions(ack, context, body, say, logger, request):
   response = requests.get(url, headers={"Authorization": "Bearer " + os.environ.get("SLACK_BOT_TOKEN")})
   users = response.json()["members"]
   replace_user_dict = {user["id"]:user["profile"]["display_name"] for user in users}
-  sent_user_name = replace_user_dict.get(user)git
+  sent_user_name = replace_user_dict.get(user)
    
   insert_text=[date_string, sent_user_name, text]
 
   # google sheets に書き込み
   last_row_index = len(worksheet.col_values(1)) + 1
-  if not insert_text in worksheet.get_all_values():
+  if insert_text in worksheet.get_all_values() == False:
     worksheet.insert_row(insert_text, last_row_index)
-
     say("スプレッドシートに登録しました.\nhttps://docs.google.com/spreadsheets/d/1eu6g0o5bVSAOexjC5COzgZaqjzGSJVqrtyousFv8KCc/edit#gid=0")
-  
+
 
 @app.event("message")
 def monitoring_nutfes_slack(body: dict):
@@ -123,123 +123,6 @@ def register_user_name():
     mongo.insert(replace_user_dict)
   mongo.update(registered_user_dict, replace_user_dict)
   
-
-
-def build_modal_view():
-  return {
-    "type": "modal",
-    "callback_id": "modal-id",
-    "title": {
-      "type": "plain_text",
-      "text": "スプレッドシート登録モーダル",
-      "emoji": True
-    },
-    "submit": {
-      "type": "plain_text",
-      "text": "Submit",
-      "emoji": True
-    },
-    "close": {
-      "type": "plain_text",
-      "text": "Cancel",
-      "emoji": True
-    },
-    "blocks": [
-      {
-        "type": "input",
-        "block_id": "question-block",
-        "element": {
-          "type": "plain_text_input",
-          "multiline": True,
-          "action_id": "plain_text_input-action"
-        },
-        "label": {
-          "type": "plain_text",
-          "text": "スプレッドシートに登録する内容を入力してください．",
-          "emoji": True
-        }
-      }
-    ]
-  }
-
-
-
-def blocks_input_form():
-  return [
-        {
-      "type": "section",
-      "text": {
-        "type": "plain_text",
-        "text": "以下の3つを入力してください",
-        "emoji": True
-      }
-    },
-    {
-      "type": "divider"
-    },
-    {
-      "type": "input",
-      "element": {
-        "type": "plain_text_input",
-        "multiline": True,
-        "action_id": "plain_text_input-action-1"
-      },
-      "label": {
-        "type": "plain_text",
-        "text": "内容の詳細",
-        "emoji": True
-      }
-    },
-    {
-      "type": "input",
-      "element": {
-        "type": "plain_text_input",
-        "action_id": "plain_text_input-action-2"
-      },
-      "label": {
-        "type": "plain_text",
-        "text": "氏名",
-        "emoji": True
-      }
-    },
-    {
-      "type": "input",
-      "element": {
-        "type": "datepicker",
-        "initial_date": "2023-06-01",
-        "placeholder": {
-          "type": "plain_text",
-          "text": "Select a date",
-          "emoji": True
-        },
-        "action_id": "datepicker-action"
-      },
-      "label": {
-        "type": "plain_text",
-        "text": "日付",
-        "emoji": True
-      }
-    },
-    {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "最後に，右の\"登録\"ボタンを押してください．"
-      },
-      "accessory": {
-        "type": "button",
-        "text": {
-          "type": "plain_text",
-          "text": "登録",
-          "emoji": True
-        },
-        "style": "primary",
-        "value": "click_me_123",
-        "action_id": "button-submit-aciton"
-      }
-    }
-
-  ]
 
 if __name__ == "__main__":
   app.start(port=int(os.environ.get("PORT", 3000)))

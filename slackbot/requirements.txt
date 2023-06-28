@@ -7,3 +7,4 @@ Logger
 typing
 slack_sdk
 datetime
+oauth2client
