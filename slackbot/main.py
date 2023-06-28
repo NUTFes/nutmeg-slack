@@ -17,7 +17,8 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name('lustrous-baton-3
 gc = gspread.authorize(credentials)
 
 # スプレッドシートキー(urlの"/d"と"/edit"の間の値)を[SPREADSHEET_KEY]に格納する
-SPREADSHEET_KEY = os.environ("SPREADSHEET_KEY")
+SPREADSHEET_KEY = os.environ.get("SPREADSHEET_KEY")
+print(SPREADSHEET_KEY)
 
 # 共有設定したGoogleSheetのsheet1を開く
 worksheet = gc.open_by_key(SPREADSHEET_KEY).sheet1
@@ -74,12 +75,13 @@ def handle_mentions(body: dict, say):
   users = response.json()["members"]
   replace_user_dict = {user["id"]:user["profile"]["display_name"] for user in users}
   sent_user_name = replace_user_dict.get(user)
-   
+  
   insert_text=[date_string, sent_user_name, text]
+  print(insert_text)
 
   # google sheets に書き込み
   last_row_index = len(worksheet.col_values(1)) + 1
-  if insert_text in worksheet.get_all_values() == False:
+  if (insert_text in worksheet.get_all_values()) == False:
     worksheet.insert_row(insert_text, last_row_index)
     say("スプレッドシートに登録しました.\nhttps://docs.google.com/spreadsheets/d/1eu6g0o5bVSAOexjC5COzgZaqjzGSJVqrtyousFv8KCc/edit#gid=0")
 
